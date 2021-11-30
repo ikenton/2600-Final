@@ -5,8 +5,6 @@
 #include <unistd.h>
 #include <string.h>
 #define LSH_RL_BUFSIZE 1024
-#define EXIT_SUCCESS
-#define EXIT_FAILURE
 #define LSH_TOK_BUFSIZE 64
 #define LSH_TOK_DELIM "\t\r\n\a"
 
@@ -97,7 +95,7 @@ char **lsh_split_line(char *line){
         position++;
         
         if(position >= bufsize){
-            bufsize ++ LSH_TOK_BUFSIZE;
+            bufsize += LSH_TOK_BUFSIZE;
             tokens = realloc(tokens, bufsize * sizeof(char*));
             if(!tokens){
                 fprintf(stderr, "lsh: allocation error\n");
@@ -112,7 +110,7 @@ char **lsh_split_line(char *line){
 }
 
 int lsh_launch(char **args){
-    pid_t, wpid;
+    pid_t pid, wpid;
     int status;
     pid = fork();
     if(pid == 0){
