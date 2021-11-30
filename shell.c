@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
-#include<sys/wait.h>
-
+#include <sys/wait.h>
+#include <unistd.h>
+#include <string.h>
 #define LSH_RL_BUFSIZE 1024
 #define EXIT_SUCCESS
 #define EXIT_FAILURE
@@ -169,4 +171,18 @@ int lsh_help(char **args){
 
 int lsh_exit(char **args){
     return 0;
+}
+
+int lsh_execute(char **args){
+    int i; 
+    if(args[0] == NULL){
+        return 1;
+    }
+
+    for(i = 0; i < lsh_num_builtins(); i++){
+        if(strcmp(args[0], builtin_str) == 0){
+            return(*builtin_func[i])(args);
+        }
+    }
+    return lsh_launch;
 }
