@@ -1,11 +1,17 @@
+/* includes */
 #include <unistd.h>
 #include <termios.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <errno.h>
+/*defines*/
+#define CTRL_KEY(k)((k) & 0x1f)
+
+/* data */
 struct termios orig_termios;
 
+/* init */
 int main(){
     enableRawMode();
 
@@ -18,11 +24,12 @@ int main(){
         } else {
             printf("%d ('%c')\r\n", c, c);
         }
-        if (c == 'q') break;
+        if (c == CTRL_KEY('q')) break;
   }
     return 0;
 }
 
+/* terminal */
 void enableRawMode() {
     if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) die("tcgetattr");
     tcgetattr(STDIN_FILENO, &orig_termios);
