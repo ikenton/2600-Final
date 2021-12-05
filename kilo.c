@@ -17,7 +17,9 @@ int main(){
 
     char c; 
     while (1) {
+        editorRefreshScreen();
         editorProcesKeypresses();
+        
   }
     return 0;
 }
@@ -72,4 +74,9 @@ void editorProcesKeypresses(){
                 break;
         }
     }
+}
+
+/* output*/
+void editorRefreshScreen(){
+    write(STDOUT_FILENO, "\x1b[2J", 4);
 }
