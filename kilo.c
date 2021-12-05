@@ -12,6 +12,8 @@
 /* data */
 
 struct editorConfig{
+    int screenrows;
+    int screencols;
     struct termios orig_termios;
 };
 struct editorConfig E;
@@ -19,13 +21,17 @@ struct editorConfig E;
 /* init */
 int main(){
     enableRawMode();
-
+    initEditor();
     char c; 
     while (1) {
         editorRefreshScreen();
         editorProcesKeypresses();  
   }
     return 0;
+}
+
+void initEditor(){
+    if(getWindowSize(&E.screenrows, &E.screencols)==-1) die("getWindowSize");
 }
 
 /* terminal */
@@ -70,7 +76,7 @@ char editorReadKey(){
 int getWindowSize(int *rows, int *cols){
     struct winsize ws;
 
-    if(ioctl(STDOUT_FILENO, TIOCCWINSZ, &ws) == -1 || ws.ws_col == 0){
+    if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0){
         return -1;
     } else {
         *cols = ws.ws_col;
@@ -107,7 +113,7 @@ void editorRefreshScreen(){
 
 void editorDrawRows(){
     int y;
-    for(y = 0; y < 24; y++){
+    for(y = 0; y < E.screenrows; y++){
         write(STDOUT_FILENO, "~\r\n", 3);
     }
 }
