@@ -431,7 +431,17 @@ void editorDrawRows(struct abuf *ab){
             int len = E.row[filerow].rsize - E.coloff;
             if (len < 0) len = 0;
             if (len > E.screencols) len = E.screencols;
-            abAppend(ab, &E.row[filerow].render[E.coloff], len);
+            char *c = &E.row[filerow].render[E.coloff];
+            int j;
+            for (j = 0; j < len; j++) {
+                if (isdigit(c[j])) {
+                    abAppend(ab, "\x1b[31m", 5);
+                    abAppend(ab, &c[j], 1);
+                    abAppend(ab, "\x1b[39m", 5);
+                } else {
+                    abAppend(ab, &c[j], 1);
+                }
+            }
         }
 
         abAppend(ab, "\x1b[K", 3);
@@ -504,7 +514,7 @@ void editorFind() {
     int saved_rowoff = E.rowoff;
 
     char *query = editorPrompt("Search: %s (Use ESC/Arrows/Enter)", editorFindCallback);
-    
+
     if (query) {
         free(query);
     }else {
