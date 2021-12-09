@@ -129,7 +129,7 @@ void disableRawMode() {
 
 void enableRawMode() {
     if (tcgetattr(STDIN_FILENO, &E.orig_termios) == -1) die("tcgetattr");
-    tcgetattr(STDIN_FILENO, E.&orig_termios);
+    tcgetattr(STDIN_FILENO, &E.orig_termios);
     atexit(disableRawMode);
 
     struct termios raw = E.orig_termios;
