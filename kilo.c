@@ -356,7 +356,7 @@ int editorSyntaxToColor(int hl) {
 void editorSelectSyntaxHighlight() {
     E.syntax = NULL;
     if (E.filename == NULL) return;
-    char *ext = strrchr(E.filename, '.');
+    char *ext = strchr(E.filename, '.');
     for (unsigned int j = 0; j < HLDB_ENTRIES; j++) {
         struct editorSyntax *s = &HLDB[j];
         unsigned int i = 0;
@@ -1000,7 +1000,7 @@ int main(int argc, char *argv[]){
     if (argc >= 2){
         editorOpen(argv[1]);
     }
-    //WEIRD ERROR HERE
+    
     editorSetStatusMessage("HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
     while (1) {
         editorRefreshScreen();
