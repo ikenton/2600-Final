@@ -14,7 +14,7 @@
 #include <time.h>//
 #include <stdarg.h>//
 #include <fcntl.h>//
-
+#include <string.h>
 /*defines*/
 #define CTRL_KEY(k)((k) & 0x1f)
 #define KILO_VERSION "0.0.1"
@@ -449,6 +449,23 @@ void editorDrawStatusBar(struct abuf *ab){
     abAppend(ab, "\x1b[m", 3);
     abAppend(ab, "\r\n", 2);
 }
+
+void editorScroll(){
+    E.rx = 0;
+    if (E.cy < E.numrows) {
+        E.rx = editorRowCxToRx(&E.row[E.cy], E.cx);
+    }
+    if(E.cy >= E.rowoff + E.screenrows){
+        E.rowoff = E.cy - E.screenrows +1;
+    }
+    if (E.rx < E.coloff) {
+        E.coloff = E.rx;
+    }
+    if (E.rx >= E.coloff + E.screencols) {
+        E.coloff = E.rx - E.screencols + 1;
+    }
+}
+
 void editorRefreshScreen(){
     editorScroll();
     struct abuf ab = ABUF_INIT;
@@ -478,21 +495,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
     E.statusmsg_time = time(NULL);
 }
 
-void editorScroll(){
-    E.rx = 0;
-    if (E.cy < E.numrows) {
-        E.rx = editorRowCxToRx(&E.row[E.cy], E.cx);
-    }
-    if(E.cy >= E.rowoff + E.screenrows){
-        E.rowoff = E.cy - E.screenrows +1;
-    }
-    if (E.rx < E.coloff) {
-        E.coloff = E.rx;
-    }
-    if (E.rx >= E.coloff + E.screencols) {
-        E.coloff = E.rx - E.screencols + 1;
-    }
-}
+
 void editorDrawRows(struct abuf *ab){
     int y;
     for(y = 0; y < E.screenrows; y++){
