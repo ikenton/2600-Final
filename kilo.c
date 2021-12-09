@@ -443,14 +443,6 @@ void editorInsertRow(int at, char *s, size_t len) {
     E.dirty++;
 }
 
-void editorAppendRow(char *s, size_t len) {
-    E.row.size = len;
-    E.row.chars = malloc(len + 1);
-    memcpy(E.row.chars, s, len);
-    E.row.chars[len] = '\0';
-    E.numrows = 1;
-}
-
 void editorFreeRow(erow *row) {
     free(row->render);
     free(row->chars);
