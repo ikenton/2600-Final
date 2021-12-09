@@ -1,34 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <string.h>
+#include <stdio.h>//
+#include <stdlib.h>//
+//#include <sys/types.h>
+#include <sys/wait.h>//
+#include <unistd.h>//
+#include <string.h>//
+
 #define LSH_RL_BUFSIZE 1024
 #define LSH_TOK_BUFSIZE 64
 #define LSH_TOK_DELIM "\t\r\n\a"
 
 
-int main(int argc, char **argv){
-    lsh_loop();
-    return EXIT_SUCCESS;
-}
 
-void lsh_loop(void){
-    char *line;
-    char **args;
-    int status;
-
-    do{
-        printf("> ");
-        line = lsh_read_line();
-        args = lsh_split_line(line);
-        status = lsh_execute(args);
-        
-        free(line);
-        free(args);
-    }while(status);
-}
 
 char *lsh_read_line(void)
 {
@@ -63,21 +45,6 @@ char *lsh_read_line(void)
         }
     }
 }
-
-char *lsh_read_line(void){
-    char *line = NULL;
-    ssize_t bufsize = 0;
-    if(getline(&line, &bufsize, stdin) == -1){
-        if(feof(stdin)){
-            exit(EXIT_SUCCESS);
-        }else{
-            perror("readline");
-            exit(EXIT_FAILURE);
-        }
-    }
-    return line;
-}
-
 
 char **lsh_split_line(char *line){
     int bufsize = LSH_TOK_BUFSIZE, position = 0;
@@ -134,10 +101,16 @@ int lsh_help(char **args);
 int lsh_exit(char **args);
 
 char *builtin_str[] = {
-    "cd","help","exit"
+    "cd",
+    "help",
+    "exit"
 };
 
-int (*builtin_func[])(char **) = {&lsh_cd, &lsh_help, &lsh_exit};
+int (*builtin_func[])(char **) = {
+    &lsh_cd, 
+    &lsh_help, 
+    &lsh_exit
+};
 
 int lsh_num_builtins(){
     return sizeof(builtin_str)/sizeof(char *);
@@ -178,9 +151,30 @@ int lsh_execute(char **args){
     }
 
     for(i = 0; i < lsh_num_builtins(); i++){
-        if(strcmp(args[0], builtin_str) == 0){
+        if(strcmp(args[0], builtin_str[i]) == 0){
             return(*builtin_func[i])(args);
         }
     }
-    return lsh_launch;
+    return lsh_launch(args);
+}
+
+void lsh_loop(void){
+    char *line;
+    char **args;
+    int status;
+
+    do{
+        printf("> ");
+        line = lsh_read_line();
+        args = lsh_split_line(line);
+        status = lsh_execute(args);
+        
+        free(line);
+        free(args);
+    }while(status);
+}
+
+int main(int argc, char **argv){
+    lsh_loop();
+    return EXIT_SUCCESS;
 }
